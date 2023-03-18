@@ -1,6 +1,6 @@
 <template>
 	<div class="mx-auto bg-primary">
-		<v-table fixed-header height="300px" style="background-color: aquamarine;">
+		<v-table fixed-header height="450px" style="background-color: aquamarine;">
 			<thead style="background-color: aqua;">
 				<tr>
 					<th class="text-left" style="background-color: #f0f0f0">Aluno</th>
@@ -8,6 +8,7 @@
 					<th class="text-left" style="background-color: #f0f0f0">Escola</th>
 					<th class="text-left" style="background-color: #f0f0f0">Número</th>
 					<th class="text-left" style="background-color: #f0f0f0">Data de criação</th>
+					<th class="text-left" style="background-color: #f0f0f0">Ações</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -17,6 +18,9 @@
 					<td>{{ item.escola.nome }}</td>
 					<td>{{ item.numero }}</td>
 					<td>{{ formatDate(item.created_at) }}</td>
+					<td>
+						<v-btn small color="primary" @click="editEssay(item.id)">Editar</v-btn>
+					</td>
 				</tr>
 			</tbody>
 		</v-table>
@@ -28,26 +32,13 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 
-interface Redacao {
-	id: string;
-	aluno: {
-		nome_completo: string;
-		turma: {
-			nome: string;
-		};
-	};
-	escola: {
-		nome: string;
-	};
-	numero: number;
-	created_at: string;
-}
+import type { Wording } from '../types/wording'
 
 export default defineComponent({
 	name: 'DashboardTable',
 	setup() {
-		const redacoes = ref<Redacao[]>([]);
-		const paginatedRedacoes = ref<Redacao[]>([]);
+		const redacoes = ref<Wording[]>([]);
+		const paginatedRedacoes = ref<Wording[]>([]);
 		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 5 });
 
 		async function fetchRedacoes() {
@@ -55,8 +46,12 @@ export default defineComponent({
 			const idStudent = window.localStorage.getItem('idStudent');
 			if (!token || !idStudent) return;
 
+			const isStudent = idStudent !== null && idStudent !== 'null';
+			const url = isStudent
+				? `https://desafio.pontue.com.br/index/aluno/${idStudent}`
+				: 'https://desafio.pontue.com.br/index/admin';
 			try {
-				const response = await axios.get('https://desafio.pontue.com.br/index/admin', {
+				const response = await axios.get(url, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
@@ -79,6 +74,10 @@ export default defineComponent({
 			});
 		}
 
+		function editEssay(essayId: string) {
+			console.log('Editar redação com ID:', essayId);
+		}
+
 		function updatePaginatedRedacoes() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
 			const end = start + pagination.value.itemsPerPage;
@@ -87,7 +86,7 @@ export default defineComponent({
 
 		onMounted(fetchRedacoes);
 
-		return { redacoes, paginatedRedacoes, pagination, formatDate, updatePaginatedRedacoes };
+		return { redacoes, paginatedRedacoes, pagination, formatDate, editEssay, updatePaginatedRedacoes };
 	},
 });
 </script>
