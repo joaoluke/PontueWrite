@@ -24,17 +24,30 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
 import DashboardTable from '@/components/DashboardTable.vue'
 
 export default {
   components: {
     DashboardTable
   },
-  methods: {
-    logout() {
-      // Implemente a lógica de logout aqui
-    }
-  }
+	setup() {
+    const router = useRouter();
+    const store = useStore();
+
+    const logout = () => {
+      window.localStorage.removeItem('token');
+      window.localStorage.removeItem('idStudent');
+
+      store.dispatch('resetState'); 
+
+      router.push('/');
+    };
+
+    return { logout };
+  },
 }
 </script>
 

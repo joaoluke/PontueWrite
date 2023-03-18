@@ -12,7 +12,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="item in paginatedRedacoes" :key="item.id">
+				<tr v-for="item in paginatedWordings" :key="item.id">
 					<td>{{ item.aluno.nome_completo }}</td>
 					<td>{{ item.aluno.turma.nome }}</td>
 					<td>{{ item.escola.nome }}</td>
@@ -37,11 +37,11 @@ import type { Wording } from '../types/wording'
 export default defineComponent({
 	name: 'DashboardTable',
 	setup() {
-		const redacoes = ref<Wording[]>([]);
-		const paginatedRedacoes = ref<Wording[]>([]);
+		const wordings = ref<Wording[]>([]);
+		const paginatedWordings = ref<Wording[]>([]);
 		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 5 });
 
-		async function fetchRedacoes() {
+		async function fetchWordings() {
 			const token = window.localStorage.getItem('token');
 			const idStudent = window.localStorage.getItem('idStudent');
 			if (!token || !idStudent) return;
@@ -57,9 +57,9 @@ export default defineComponent({
 					},
 				});
 
-				redacoes.value = response.data.data;
-				pagination.value.pageCount = Math.ceil(redacoes.value.length / pagination.value.itemsPerPage);
-				updatePaginatedRedacoes();
+				wordings.value = response.data.data;
+				pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
+				updatePaginatedWordings();
 			} catch (error) {
 				console.error('Erro ao buscar as redações:', error);
 			}
@@ -78,15 +78,15 @@ export default defineComponent({
 			console.log('Editar redação com ID:', essayId);
 		}
 
-		function updatePaginatedRedacoes() {
+		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
 			const end = start + pagination.value.itemsPerPage;
-			paginatedRedacoes.value = redacoes.value.slice(start, end);
+			paginatedWordings.value = wordings.value.slice(start, end);
 		}
 
-		onMounted(fetchRedacoes);
+		onMounted(fetchWordings);
 
-		return { redacoes, paginatedRedacoes, pagination, formatDate, editEssay, updatePaginatedRedacoes };
+		return { wordings, paginatedWordings, pagination, formatDate, editEssay, updatePaginatedWordings };
 	},
 });
 </script>

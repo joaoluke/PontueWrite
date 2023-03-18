@@ -12,7 +12,11 @@ export default createStore({
     login(state: RootState, payload: { token: string, idStudent: number }) {
       state.token = payload.token;
       state.idStudent = payload.idStudent;
-    }
+    },
+    resetState(state: RootState) {
+      state.token = null;
+      state.idStudent = null;
+    },
   },
   actions: {
     async authenticate({ commit }, { email, password }) {
@@ -28,7 +32,10 @@ export default createStore({
         console.error(error)
         return false
       }
-    }
+    },
+    resetState({ commit }) {
+      commit('resetState');
+    },
   },
   modules: {
     // Defina seus módulos aqui

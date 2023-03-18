@@ -3,13 +3,13 @@ import LoginView from '../components/LoginForm.vue'
 </script>
 
 <template>
-	<main class="container">
+	<main class="container-login">
 		<LoginView />
 	</main>
 </template>
 
 <style>
-.container {
+.container-login {
 	height: 100vh;
 	display: flex;
 	align-items: center;
