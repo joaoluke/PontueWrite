@@ -27,19 +27,26 @@
 		</v-table>
 		<v-pagination class="custom-pagination" rounded="circle" :length="pagination.pageCount" v-model="pagination.page"
 			@update:modelValue="updatePaginatedWordings"></v-pagination>
-
+		<form-wording :title="'Editar redação'" ref="formWording"></form-wording>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
+import { useStore } from 'vuex'
 import axios from 'axios';
 
+import FormWording from '@/components/FormWording.vue';
 import type { WordingsAdmin } from '../types/wordingAdmin'
 
 export default defineComponent({
 	name: 'DashboardTableAdmin',
+	components: {
+		FormWording,
+	},
 	setup() {
+		const store = useStore();
+
 		const wordings = ref<WordingsAdmin[]>([]);
 		const paginatedWordings = ref<WordingsAdmin[]>([]);
 		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 5 });
@@ -77,9 +84,14 @@ export default defineComponent({
 			});
 		}
 
-		function editEssay(essayId: string) {
-			console.log('Editar redação com ID:', essayId);
-		}
+		function openFormWording() {
+      store.commit('setFormWordingOpen', true);
+    }
+
+    function editEssay(essayId: string) {
+      console.log('Editar redação com ID:', essayId);
+      openFormWording();
+    }
 
 		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
@@ -89,7 +101,7 @@ export default defineComponent({
 
 		onMounted(fetchWordings);
 
-		return { wordings, paginatedWordings, pagination, formatDate, editEssay, updatePaginatedWordings };
+		return { wordings, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
 	},
 });
 </script>

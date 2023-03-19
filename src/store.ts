@@ -7,6 +7,7 @@ export default createStore({
   state: {
     token: null,
     idStudent: null,
+    formWordingOpen: false,
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -16,6 +17,9 @@ export default createStore({
     resetState(state: RootState) {
       state.token = null;
       state.idStudent = null;
+    },
+    setFormWordingOpen(state, open) {
+      state.formWordingOpen = open;
     },
   },
   actions: {
@@ -36,8 +40,9 @@ export default createStore({
     resetState({ commit }) {
       commit('resetState');
     },
+    openFormWording({ commit }) {
+      commit('setFormWordingOpen', true);
+    },
   },
-  modules: {
-    // Defina seus módulos aqui
-  }
+  modules: {}
 })

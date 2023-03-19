@@ -6,7 +6,7 @@
 			</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
-				<v-btn text>
+				<v-btn text @click="openFormWording">
 					Adicionar Redação
 				</v-btn>
 				<v-btn text @click="logout">
@@ -18,6 +18,7 @@
 			<DashboardTableAdmin v-if="isUserAdmin" />
 			<DashboardTableStudent v-else />
 		</main>
+		<FormWording :title="'Adicionar redação'" ref="formWording"></FormWording>
 	</v-app>
 </template>
 
@@ -27,11 +28,13 @@ import { useStore } from 'vuex';
 
 import DashboardTableAdmin from '@/components/DashboardTableAdmin.vue'
 import DashboardTableStudent from '@/components/DashboardTableStudent.vue'
+import FormWording from '@/components/FormWording.vue';
 
 export default {
 	components: {
 		DashboardTableAdmin,
-		DashboardTableStudent
+		DashboardTableStudent,
+		FormWording
 	},
 	setup() {
 		const router = useRouter();
@@ -46,7 +49,11 @@ export default {
 			router.push('/');
 		};
 
-		return { logout };
+		function openFormWording() {
+      store.commit('setFormWordingOpen', true);
+    }
+
+    return { logout, openFormWording };
 	},
 	data() {
 		return {
