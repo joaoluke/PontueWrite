@@ -4,9 +4,9 @@
       <v-toolbar-title>Login PONTUE</v-toolbar-title>
     </v-toolbar>
     <v-form @submit.prevent="login" style="padding: 10px;">
-      <v-text-field type="email" v-model="email" label="Email"></v-text-field>
-      <v-text-field type="password" v-model="password" label="Password"></v-text-field>
-      <v-btn color="#9570d4" type="submit" block class="mt-2">Submit</v-btn>
+      <v-text-field id="email" name="email" type="email" v-model="email" label="Email"></v-text-field>
+      <v-text-field id="password" name="password" type="password" v-model="password" label="Password"></v-text-field>
+      <v-btn id="submit" color="#9570d4" type="submit" block class="mt-2">Submit</v-btn>
       <p v-if="errorLogin" style="margin-top: 6px; color: #cb1010; font-size: 11px; text-align: center;">Erro ao fazer
         login, verifique suas credenciais e tente novamente</p>
     </v-form>
