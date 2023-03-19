@@ -1,4 +1,4 @@
-export interface Wording {
+export interface WordingsAdmin {
   id: string
   aluno: {
     nome_completo: string

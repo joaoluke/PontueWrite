@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 
-import DashboardTable from '@/components/DashboardTable.vue'
+import DashboardTableAdmin from '@/components/DashboardTableAdmin.vue'
 
 describe('DashboardTable', () => {
   it('renders the table header properly', () => {
-    const wrapper = mount(DashboardTable)
+    const wrapper = mount(DashboardTableAdmin)
 
     const headers = wrapper.findAll('th')
     expect(headers[0].text()).toContain('Aluno')
@@ -34,7 +34,7 @@ describe('DashboardTable', () => {
       },
     ]
   
-    const wrapper = mount(DashboardTable, {
+    const wrapper = mount(DashboardTableAdmin, {
       props: {
         wordings: testWordings,
       },

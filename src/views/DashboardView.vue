@@ -9,16 +9,14 @@
 				<v-btn text>
 					Adicionar Redação
 				</v-btn>
-				<v-btn text>
-					Perfil
-				</v-btn>
 				<v-btn text @click="logout">
 					Sair
 				</v-btn>
 			</v-toolbar-items>
 		</v-toolbar>
 		<main class="container">
-			<DashboardTable />
+			<DashboardTableAdmin v-if="isUserAdmin" />
+			<DashboardTableStudent v-else />
 		</main>
 	</v-app>
 </template>
@@ -27,27 +25,43 @@
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
-import DashboardTable from '@/components/DashboardTable.vue'
+import DashboardTableAdmin from '@/components/DashboardTableAdmin.vue'
+import DashboardTableStudent from '@/components/DashboardTableStudent.vue'
 
 export default {
-  components: {
-    DashboardTable
-  },
+	components: {
+		DashboardTableAdmin,
+		DashboardTableStudent
+	},
 	setup() {
-    const router = useRouter();
-    const store = useStore();
+		const router = useRouter();
+		const store = useStore();
 
-    const logout = () => {
-      window.localStorage.removeItem('token');
-      window.localStorage.removeItem('idStudent');
+		const logout = () => {
+			window.localStorage.removeItem('token');
+			window.localStorage.removeItem('idStudent');
 
-      store.dispatch('resetState'); 
+			store.dispatch('resetState');
 
-      router.push('/');
-    };
+			router.push('/');
+		};
 
-    return { logout };
-  },
+		return { logout };
+	},
+	data() {
+		return {
+			isUserAdmin: false,
+		};
+	},
+	created() {
+		this.isUserAdmin = this.checkIsUserAdmin();
+	},
+	methods: {
+		checkIsUserAdmin() {
+			const idStudent = window.localStorage.getItem('idStudent');
+			return idStudent === null || idStudent === 'null';
+		},
+	},
 }
 </script>
 
