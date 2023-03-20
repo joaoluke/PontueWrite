@@ -6,7 +6,7 @@
 			</v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-toolbar-items>
-				<v-btn text @click="openFormWording">
+				<v-btn text v-if="!isUserAdmin" @click="openFormWording">
 					Adicionar Redação
 				</v-btn>
 				<v-btn text @click="logout">

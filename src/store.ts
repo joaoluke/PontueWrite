@@ -8,7 +8,9 @@ export default createStore({
     token: null,
     idStudent: null,
     formWordingOpen: false,
-    formWordingTitle: ''
+    formWordingMode: 'create',
+    formWordingTitle: 'Adicionar redação',
+    wordings: [],
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -19,11 +21,17 @@ export default createStore({
       state.token = null;
       state.idStudent = null;
     },
-    setFormWordingOpen(state, open) {
-      state.formWordingOpen = open;
+    setFormWordingOpen(state, value) {
+      state.formWordingOpen = value;
     },
-    setFormWordingTitle(state, title) {
-      state.formWordingTitle = title;
+    setFormWordingMode(state, value) {
+      state.formWordingMode = value;
+    },
+    setFormWordingTitle(state, value) {
+      state.formWordingTitle = value;
+    },
+    setWordings(state, wordings) { // Adicione esta mutation
+      state.wordings = wordings;
     },
   },
   actions: {
@@ -48,5 +56,10 @@ export default createStore({
       commit('setFormWordingOpen', true);
     },
   },
-  modules: {}
+  modules: {},
+  getters: {
+    getWordings: state => {
+      return state.wordings.map(wording => wording)
+    }
+  },
 })

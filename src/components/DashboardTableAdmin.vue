@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref, computed, } from 'vue';
 import { useStore } from 'vuex'
 import axios from 'axios';
 
@@ -43,8 +43,9 @@ export default defineComponent({
 		const store = useStore();
 
 		const wordings = ref<WordingsAdmin[]>([]);
+		const wordingVuex = computed(() => store.getters.getWordings);
 		const paginatedWordings = ref<WordingsAdmin[]>([]);
-		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 5 });
+		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 10 });
 
 		async function fetchWordings() {
 			const token = window.localStorage.getItem('token');
@@ -62,8 +63,10 @@ export default defineComponent({
 					},
 				});
 
+				store.commit('setWordings', response.data.data);
+
 				wordings.value = response.data.data;
-				pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
+				pagination.value.pageCount = Math.ceil(wordingVuex.value.length / pagination.value.itemsPerPage);
 				updatePaginatedWordings();
 			} catch (error) {
 				console.error('Erro ao buscar as redações:', error);
@@ -89,15 +92,17 @@ export default defineComponent({
 			openFormWording()
 		}
 
+		console.log(wordingVuex.value, "wordingVuex")
+
 		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
 			const end = start + pagination.value.itemsPerPage;
-			paginatedWordings.value = wordings.value.slice(start, end);
+			paginatedWordings.value = wordingVuex.value.slice(start, end);
 		}
 
 		onMounted(fetchWordings);
 
-		return { wordings, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
+		return { wordings,wordingVuex, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
 	},
 });
 </script>
