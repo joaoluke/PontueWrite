@@ -15,7 +15,7 @@
 			</v-toolbar-items>
 		</v-toolbar>
 		<main class="container">
-			<DashboardTableAdmin v-if="isUserAdmin" />
+			<DashboardTableAdmin v-if="isUserAdmin" @edit-essay="openEditFormWording" />
 			<DashboardTableStudent v-else />
 		</main>
 		<FormWording :title="'Adicionar redação'" ref="formWording"></FormWording>
@@ -50,10 +50,11 @@ export default {
 		};
 
 		function openFormWording() {
-      store.commit('setFormWordingOpen', true);
-    }
+			store.commit('setFormWordingTitle', 'Adicionar redação');
+			store.commit('setFormWordingOpen', true);
+		}
 
-    return { logout, openFormWording };
+		return { logout, openFormWording };
 	},
 	data() {
 		return {

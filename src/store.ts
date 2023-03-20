@@ -8,6 +8,7 @@ export default createStore({
     token: null,
     idStudent: null,
     formWordingOpen: false,
+    formWordingTitle: ''
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -20,6 +21,9 @@ export default createStore({
     },
     setFormWordingOpen(state, open) {
       state.formWordingOpen = open;
+    },
+    setFormWordingTitle(state, title) {
+      state.formWordingTitle = title;
     },
   },
   actions: {

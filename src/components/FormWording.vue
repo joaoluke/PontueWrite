@@ -38,18 +38,14 @@ import { useStore } from 'vuex';
 
 export default defineComponent({
 	name: 'FormWording',
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-	},
 	setup() {
 		const store = useStore();
 		const dialog = computed({
 			get: () => store.state.formWordingOpen,
 			set: (value) => store.commit('setFormWordingOpen', value),
 		});
+
+		const title = computed(() => store.state.formWordingTitle);
 
 		const input1 = ref('');
 		const input2 = ref('');
@@ -59,8 +55,9 @@ export default defineComponent({
 			console.log('Salvar');
 		}
 
-		return { dialog, input1, input2, input3, save };
+		return { dialog, title, input1, input2, input3, save };
 	},
 });
 </script>
+
   
