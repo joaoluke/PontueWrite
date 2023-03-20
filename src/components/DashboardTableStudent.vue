@@ -24,8 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from 'vue';
-import axios from 'axios';
+import { defineComponent, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 import type { WordingsStudent } from '../types/wordingStudent'
@@ -45,30 +44,17 @@ export default defineComponent({
 				tableWrapper.value.scrollTop = 0;
 			}
 		}
-		
+
 		function editEssay(essayId: string) {
 			console.log('Editar redação com ID:', essayId);
 		}
-		
-		async function fetchWordings() {
-			const token = window.localStorage.getItem('token');
-			const idStudent = window.localStorage.getItem('idStudent');
-			if (!token || !idStudent) return;
-			const url = `https://desafio.pontue.com.br/index/aluno/${idStudent}`;
-			try {
-				const response = await axios.get(url, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
 
-				store.commit('setWordings', response.data.data);
-				pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
-				updatePaginatedWordings();
-			} catch (error) {
-				console.error('Erro ao buscar as redações:', error);
-			}
+		async function fetchWordings() {
+			await store.dispatch('fetchWordings');
+			pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
+			updatePaginatedWordings();
 		}
+
 		function formatDate(date: string) {
 			const parsedDate = new Date(date);
 			return parsedDate.toLocaleDateString('pt-BR', {
@@ -77,12 +63,20 @@ export default defineComponent({
 				year: 'numeric',
 			});
 		}
+
+		watch(wordings, (newValue) => {
+			// Executa quando 'wordings' é atualizado
+			console.log('wordings atualizado:', newValue);
+			updatePaginatedWordings()
+		});
+
 		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
 			const end = start + pagination.value.itemsPerPage;
 			paginatedWordings.value = wordings.value.slice(start, end);
 			scrollToTop();
 		}
+
 		onMounted(fetchWordings);
 		return { wordings, paginatedWordings, pagination, formatDate, updatePaginatedWordings, editEssay };
 	},

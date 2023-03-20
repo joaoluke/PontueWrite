@@ -35,6 +35,23 @@ export default createStore({
     },
   },
   actions: {
+    async fetchWordings({ commit }) {
+      const token = window.localStorage.getItem('token');
+      const idStudent = window.localStorage.getItem('idStudent');
+      if (!token || !idStudent) return;
+      const url = `https://desafio.pontue.com.br/index/aluno/${idStudent}`;
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        commit('setWordings', response.data.data);
+      } catch (error) {
+        console.error('Erro ao buscar as redações:', error);
+      }
+    },
     async authenticate({ commit }, { email, password }) {
       try {
         const response = await axios.post('https://desafio.pontue.com.br/auth/login', {

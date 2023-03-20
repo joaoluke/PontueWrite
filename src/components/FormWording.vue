@@ -19,6 +19,9 @@
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
+	<v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout">
+		{{ snackbar.message }}
+	</v-snackbar>
 </template>
 
 <script>
@@ -33,6 +36,13 @@ export default {
 		const dialog = computed({
 			get: () => store.state.formWordingOpen,
 			set: (value) => store.commit('setFormWordingOpen', value),
+		});
+
+		const snackbar = ref({
+			show: false,
+			message: '',
+			color: 'success',
+			timeout: 5000,
 		});
 
 		const mode = computed(() => store.state.formWordingMode);
@@ -53,6 +63,7 @@ export default {
 			}
 		}
 
+
 		async function createEssay() {
 			if (!file.value || !file.value.length) {
 				alert('Por favor, selecione um arquivo.');
@@ -64,24 +75,34 @@ export default {
 
 			try {
 				const token = window.localStorage.getItem('token');
-				const response = await axios.post('https://desafio.pontue.com.br/alunos/redacao/create', formData, {
+				await axios.post('https://desafio.pontue.com.br/alunos/redacao/create', formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 						Authorization: `Bearer ${token}`,
 					},
 				});
-				const updatedWordings = store.state.wordings.concat(response.data);
-				store.commit('setWordings', updatedWordings);
+				snackbar.value = {
+					...snackbar.value,
+					show: true,
+					message: 'Salvo com sucesso',
+					color: 'success',
+				};
 				file.value.value = '';
 				closeDialog();
+				await store.dispatch('fetchWordings');
 			} catch (error) {
 				console.error('Erro ao criar a redação:', error);
+				snackbar.value = {
+					...snackbar.value,
+					show: true,
+					message: 'Erro ao salvar',
+					color: 'error',
+				};
 			}
 		}
 
 		function updateEssay() {
 			console.log('Atualizar redação');
-			// Implementar a lógica para atualizar a redação
 		}
 
 		return {
@@ -91,7 +112,8 @@ export default {
 			closeDialog,
 			submitForm,
 			mode,
-			title
+			title,
+			snackbar
 		};
 	},
 };
