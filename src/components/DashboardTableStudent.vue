@@ -24,24 +24,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref, computed } from 'vue';
 import axios from 'axios';
+import { useStore } from 'vuex';
+
 import type { WordingsStudent } from '../types/wordingStudent'
+
 export default defineComponent({
 	name: 'DashboardTableStudent',
 	setup() {
-		const wordings = ref<WordingsStudent[]>([]);
+		const store = useStore()
+
+		const wordings = computed(() => store.getters.getWordings);
 		const paginatedWordings = ref<WordingsStudent[]>([]);
 		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 10 });
 		const tableWrapper = ref<HTMLElement | null>(null);
+
 		function scrollToTop() {
 			if (tableWrapper.value) {
 				tableWrapper.value.scrollTop = 0;
 			}
 		}
+		
 		function editEssay(essayId: string) {
 			console.log('Editar redação com ID:', essayId);
 		}
+		
 		async function fetchWordings() {
 			const token = window.localStorage.getItem('token');
 			const idStudent = window.localStorage.getItem('idStudent');
@@ -54,7 +62,7 @@ export default defineComponent({
 					},
 				});
 
-				wordings.value = response.data.data;
+				store.commit('setWordings', response.data.data);
 				pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
 				updatePaginatedWordings();
 			} catch (error) {

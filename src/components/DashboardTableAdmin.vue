@@ -42,8 +42,7 @@ export default defineComponent({
 	setup() {
 		const store = useStore();
 
-		const wordings = ref<WordingsAdmin[]>([]);
-		const wordingVuex = computed(() => store.getters.getWordings);
+		const wordings = computed(() => store.getters.getWordings);
 		const paginatedWordings = ref<WordingsAdmin[]>([]);
 		const pagination = ref({ page: 1, pageCount: 1, itemsPerPage: 10 });
 
@@ -65,8 +64,7 @@ export default defineComponent({
 
 				store.commit('setWordings', response.data.data);
 
-				wordings.value = response.data.data;
-				pagination.value.pageCount = Math.ceil(wordingVuex.value.length / pagination.value.itemsPerPage);
+				pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
 				updatePaginatedWordings();
 			} catch (error) {
 				console.error('Erro ao buscar as redações:', error);
@@ -92,17 +90,17 @@ export default defineComponent({
 			openFormWording()
 		}
 
-		console.log(wordingVuex.value, "wordingVuex")
+		console.log(wordings.value, "wordings")
 
 		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
 			const end = start + pagination.value.itemsPerPage;
-			paginatedWordings.value = wordingVuex.value.slice(start, end);
+			paginatedWordings.value = wordings.value.slice(start, end);
 		}
 
 		onMounted(fetchWordings);
 
-		return { wordings,wordingVuex, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
+		return { wordings, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
 	},
 });
 </script>
