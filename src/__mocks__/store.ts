@@ -4,11 +4,11 @@ import { createStore } from 'vuex';
 export const storeMock = createStore({
   state: {
     wordings: [] as WordingsStudent[],
-    deleteModalOpen: false,
-    wordingId: 'test-id',
-    formWordingOpen: false,
-    formWordingMode: '',
-    formWordingTitle: ''
+    deleteModalOpen: false as boolean,
+    wordingId: 'test-id' as string,
+    formWordingOpen: false as boolean,
+    formWordingMode: '' as string,
+    formWordingTitle: '' as string
   },
   getters: {
     getWordings: (state) => state.wordings,
@@ -16,11 +16,6 @@ export const storeMock = createStore({
     getFormWordingOpen: () => storeMock.state.formWordingOpen,
     getFormWordingMode: () => storeMock.state.formWordingMode,
     getFormWordingTitle: () => storeMock.state.formWordingTitle
-  },
-  commit: (mutation: string, payload: any) => {
-    if (mutation === 'setFormWordingOpen') {
-      storeMock.state.formWordingOpen = payload
-    }
   },
   mutations: {
     setDeleteModalOpen: () => {}
