@@ -90,9 +90,9 @@ export default defineComponent({
 		}
 
 		function editEssay(essayId: string) {
-			console.log('Editar redação com ID:', essayId);
 			store.commit('setFormWordingTitle', 'Editar redação');
 			openFormWording()
+			store.dispatch('fetchEssay', essayId);
 		}
 
 		watch(wordings, () => {

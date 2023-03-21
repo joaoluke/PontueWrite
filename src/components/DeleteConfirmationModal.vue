@@ -51,7 +51,6 @@ export default defineComponent({
 		const confirm = async () => {
 			const wordingId = store.state.wordingId;
 			const actionRequest = await store.dispatch("deleteWording", wordingId);
-			console.log(actionRequest, "actionRequest")
 			if (actionRequest) {
 				snackbar.value = {
 					...snackbar.value,

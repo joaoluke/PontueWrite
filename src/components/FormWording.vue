@@ -13,8 +13,9 @@
 			<v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn text @click="closeDialog">Cancelar</v-btn>
-				<v-btn :disabled="isLoading" :color="mode === 'create' ? 'green darken-1' : 'blue darken-1'" text @click="submitForm">
-					{{ mode === 'create' ? 'Criar Redação' : 'Atualizar Redação' }}
+				<v-btn :disabled="isLoading" :color="mode === 'create' ? 'green darken-1' : 'blue darken-1'" text
+					@click="submitForm">
+					{{ title === 'Adicionar redação' ? 'Salvar' : 'Editar' }}
 				</v-btn>
 			</v-card-actions>
 		</v-card>
@@ -34,7 +35,6 @@ export default {
 		const store = useStore();
 
 		const isLoading = ref(false);
-
 
 		const dialog = computed({
 			get: () => store.state.formWordingOpen,
@@ -58,11 +58,45 @@ export default {
 			dialog.value = false;
 		}
 
-		function submitForm() {
-			if (mode.value === 'create') {
-				createEssay();
-			} else if (mode.value === 'edit') {
-				updateEssay();
+		async function updateEssay() {
+			if (!file.value || !file.value.length) {
+				alert('Por favor, selecione um arquivo.');
+				return;
+			}
+			
+			const wordingId = computed(() => store.getters.wordingIdToDelete);
+			const urlId = computed(() => store.getters.getUrlId);
+			const formData = new FormData();
+			formData.append('urls[]', urlId.value);
+			formData.append('file[]', file.value[0]);
+			
+			try {
+				const token = window.localStorage.getItem('token');
+				await axios.post(`https://desafio.pontue.com.br/redacao/${wordingId.value}/update`, formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				snackbar.value = {
+					...snackbar.value,
+					show: true,
+					message: 'Atualizado com sucesso',
+					color: 'success',
+				};
+
+				file.value.value = '';
+				closeDialog();
+				await store.dispatch('fetchWordings');
+			} catch (error) {
+				console.error('Erro ao atualizar a redação:', error);
+				snackbar.value = {
+					...snackbar.value,
+					show: true,
+					message: 'Erro ao atualizar',
+					color: 'error',
+				};
 			}
 		}
 
@@ -108,8 +142,12 @@ export default {
 			}
 		}
 
-		function updateEssay() {
-			console.log('Atualizar redação');
+		function submitForm() {
+			if (title.value === 'Adicionar redação') {
+				createEssay();
+			} else if (title.value === 'Editar redação') {
+				updateEssay();
+			}
 		}
 
 		return {

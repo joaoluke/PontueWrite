@@ -14,7 +14,7 @@
 		<DashboardTableAdmin v-if="isUserAdmin" @edit-essay="openEditFormWording" />
 		<DashboardTableStudent v-else />
 	  </main>
-	  <FormWording :title="'Adicionar redação'" ref="formWording"></FormWording>
+	  <FormWording ref="formWording"></FormWording>
 	  <DeleteModal />
 	</v-app>
   </template>

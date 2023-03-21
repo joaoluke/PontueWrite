@@ -2,6 +2,8 @@ import { createStore } from 'vuex'
 import axios from 'axios'
 
 import type { RootState } from './types/store';
+import FormWording from './components/FormWording.vue';
+
 
 export default createStore({
   state: {
@@ -14,6 +16,7 @@ export default createStore({
     deleteModalOpen: false,
     wordingId: null,
     isLoading: false,
+    urlId: ''
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -48,6 +51,9 @@ export default createStore({
     setLoading(state, payload) {
       state.isLoading = payload;
     },
+    setURL(state, payload) {
+      state.urlId = payload;
+    },
   },
   actions: {
     openDeleteModal({ commit }, wordingId) {
@@ -61,7 +67,10 @@ export default createStore({
       const token = window.localStorage.getItem('token');
       const idStudent = window.localStorage.getItem('idStudent');
       if (!token || !idStudent) return;
-      const url = `https://desafio.pontue.com.br/index/aluno/${idStudent}`;
+      const isStudent = idStudent !== null && idStudent !== 'null';
+			const url = isStudent
+				? `https://desafio.pontue.com.br/index/aluno/${idStudent}`
+				: 'https://desafio.pontue.com.br/index/admin';
       try {
         const response = await axios.get(url, {
           headers: {
@@ -74,6 +83,25 @@ export default createStore({
         console.error('Erro ao buscar as redações:', error);
       }
     },
+    async fetchEssay({ commit }, essayId: number) {
+      commit("setWordingId", essayId);
+			const token = window.localStorage.getItem('token');
+			const url = `https://desafio.pontue.com.br/redacao/${essayId}`;
+
+			try {
+				const response = await axios.get(url, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				const essayData = response.data.data;
+				commit("setURL", essayData.urls[0].id);
+
+			} catch (error) {
+				console.error('Erro ao buscar a redação:', error);
+			}
+		},
     async deleteWording({ commit }, wordingId: number) {
       commit("setLoading", true);
 
@@ -133,5 +161,6 @@ export default createStore({
     isDeleteModalOpen: (state) => state.deleteModalOpen,
     wordingIdToDelete: (state) => state.wordingId,
     getIsLoading: (state) => state.isLoading,
+    getUrlId: (state) => state.urlId,
   },
 })

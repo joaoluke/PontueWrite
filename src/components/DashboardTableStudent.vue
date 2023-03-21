@@ -15,7 +15,8 @@
 					<td>
 						<v-btn size="small" color="#bb3f94" style="color: white; margin-right: 5px;"
 							@click="editEssay(item.id)">Editar</v-btn>
-						<v-btn size="small" color="#a73266" style="color: white" @click="openDeleteModal(item.id)">Excluir</v-btn>
+						<v-btn size="small" color="#a73266" style="color: white"
+							@click="openDeleteModal(item.id)">Excluir</v-btn>
 					</td>
 				</tr>
 			</tbody>
@@ -51,10 +52,16 @@ export default defineComponent({
 			store.dispatch("openDeleteModal", wordingId);
 		}
 
+		function openFormWording() {
+			store.commit('setFormWordingOpen', true);
+		}
 
 		function editEssay(essayId: string) {
-			console.log('Editar redação com ID:', essayId);
+			store.commit('setFormWordingTitle', 'Editar redação');
+			openFormWording();
+			store.dispatch('fetchEssay', essayId);
 		}
+
 
 		async function fetchWordings() {
 			await store.dispatch('fetchWordings');

@@ -11,6 +11,7 @@ export interface RootState {
   deleteModalOpen: boolean
   wordingId: null | string
   isLoading: boolean
+  urlId: string
 }
 
 export interface LoginPayload {
