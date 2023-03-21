@@ -5,7 +5,7 @@
 				<tr>
 					<th class="text-left" style="background-color: #f0f0f0">Número</th>
 					<th class="text-left" style="background-color: #f0f0f0">Data de criação</th>
-					<th class="text-left header-action" style="background-color: #f0f0f0">Ações</th>
+					<th class="text-left header-action" style="background-color: #f0f0f0; width: 235px;">Ações</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -13,7 +13,9 @@
 					<td>{{ item.numero || null }}</td>
 					<td>{{ formatDate(item.created_at) }}</td>
 					<td>
-						<v-btn small color="#bb3f94" style="color: white" @click="editEssay(item.id)">Editar</v-btn>
+						<v-btn small color="#bb3f94" style="color: white; margin-right: 5px;"
+							@click="editEssay(item.id)">Editar</v-btn>
+						<v-btn small color="#a73266" style="color: white" @click="openDeleteModal(item.id)">Excluir</v-btn>
 					</td>
 				</tr>
 			</tbody>
@@ -44,6 +46,11 @@ export default defineComponent({
 				tableWrapper.value.scrollTop = 0;
 			}
 		}
+
+		function openDeleteModal(wordingId: string) {
+			store.dispatch("openDeleteModal", wordingId);
+		}
+
 
 		function editEssay(essayId: string) {
 			console.log('Editar redação com ID:', essayId);
@@ -78,7 +85,7 @@ export default defineComponent({
 		}
 
 		onMounted(fetchWordings);
-		return { wordings, paginatedWordings, pagination, formatDate, updatePaginatedWordings, editEssay };
+		return { wordings, openDeleteModal, paginatedWordings, pagination, formatDate, updatePaginatedWordings, editEssay };
 	},
 });
 </script>

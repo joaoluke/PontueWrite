@@ -11,6 +11,8 @@ export default createStore({
     formWordingMode: 'create',
     formWordingTitle: 'Adicionar redação',
     wordings: [],
+    deleteModalOpen: false,
+    wordingId: null,
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -30,11 +32,27 @@ export default createStore({
     setFormWordingTitle(state, value) {
       state.formWordingTitle = value;
     },
-    setWordings(state, wordings) { // Adicione esta mutation
+    setWordings(state, wordings) {
       state.wordings = wordings;
+    },
+    setDeleteModalOpen(state, isOpen) {
+      state.deleteModalOpen = isOpen;
+    },
+    setWordingId(state, wordingId) {
+      state.wordingId = wordingId;
+    },
+    removeWordingById(state, wordingId) {
+      state.wordings = state.wordings.filter(wording => wording.id !== wordingId);
     },
   },
   actions: {
+    openDeleteModal({ commit }, wordingId) {
+      commit("setWordingId", wordingId);
+      commit("setDeleteModalOpen", true);
+    },
+    closeDeleteModal({ commit }) {
+      commit("setDeleteModalOpen", false);
+    },
     async fetchWordings({ commit }) {
       const token = window.localStorage.getItem('token');
       const idStudent = window.localStorage.getItem('idStudent');
@@ -50,6 +68,35 @@ export default createStore({
         commit('setWordings', response.data.data);
       } catch (error) {
         console.error('Erro ao buscar as redações:', error);
+      }
+    },
+    async deleteWording({ commit }, wordingId: number) {
+      commit("setDeleting", true);
+
+      try {
+        const token = localStorage.getItem('token');
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+    
+        const response = await axios.delete(`https://desafio.pontue.com.br/redacao/${wordingId}/delete`, config);
+    
+
+        if (response.status === 200) {
+          console.info(response.data)
+          commit("setDeleteModalOpen", false);
+          commit("removeWordingById", wordingId);
+          return true
+        } else {
+          console.error(response)
+        }
+      } catch (error) {
+        console.error("Erro ao excluir redação:", error);
+        return false
+      } finally {
+        commit("setDeleting", false);
       }
     },
     async authenticate({ commit }, { email, password }) {
@@ -77,6 +124,8 @@ export default createStore({
   getters: {
     getWordings: state => {
       return state.wordings.map(wording => wording)
-    }
+    },
+    isDeleteModalOpen: (state) => state.deleteModalOpen,
+    wordingIdToDelete: (state) => state.wordingId,
   },
 })
