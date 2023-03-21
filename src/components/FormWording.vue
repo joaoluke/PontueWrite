@@ -13,7 +13,7 @@
 			<v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn text @click="closeDialog">Cancelar</v-btn>
-				<v-btn :color="mode === 'create' ? 'green darken-1' : 'blue darken-1'" text @click="submitForm">
+				<v-btn :disabled="isLoading" :color="mode === 'create' ? 'green darken-1' : 'blue darken-1'" text @click="submitForm">
 					{{ mode === 'create' ? 'Criar Redação' : 'Atualizar Redação' }}
 				</v-btn>
 			</v-card-actions>
@@ -32,6 +32,9 @@ import axios from 'axios'
 export default {
 	setup() {
 		const store = useStore();
+
+		const isLoading = ref(false);
+
 
 		const dialog = computed({
 			get: () => store.state.formWordingOpen,
@@ -65,6 +68,8 @@ export default {
 
 
 		async function createEssay() {
+			isLoading.value = true;
+
 			if (!file.value || !file.value.length) {
 				alert('Por favor, selecione um arquivo.');
 				return;
@@ -98,6 +103,8 @@ export default {
 					message: 'Erro ao salvar',
 					color: 'error',
 				};
+			} finally {
+				isLoading.value = false;
 			}
 		}
 
@@ -113,7 +120,8 @@ export default {
 			submitForm,
 			mode,
 			title,
-			snackbar
+			snackbar,
+			isLoading
 		};
 	},
 };

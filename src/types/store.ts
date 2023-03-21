@@ -8,8 +8,9 @@ export interface RootState {
   formWordingMode: string
   formWordingTitle: string
   wordings: WordingsAdmin[] | WordingsStudent[]
-  deleteModalOpen: boolean,
+  deleteModalOpen: boolean
   wordingId: null | string
+  isLoading: boolean
 }
 
 export interface LoginPayload {

@@ -13,9 +13,9 @@
 					<td>{{ item.numero || null }}</td>
 					<td>{{ formatDate(item.created_at) }}</td>
 					<td>
-						<v-btn small color="#bb3f94" style="color: white; margin-right: 5px;"
+						<v-btn size="small" color="#bb3f94" style="color: white; margin-right: 5px;"
 							@click="editEssay(item.id)">Editar</v-btn>
-						<v-btn small color="#a73266" style="color: white" @click="openDeleteModal(item.id)">Excluir</v-btn>
+						<v-btn size="small" color="#a73266" style="color: white" @click="openDeleteModal(item.id)">Excluir</v-btn>
 					</td>
 				</tr>
 			</tbody>
@@ -71,9 +71,7 @@ export default defineComponent({
 			});
 		}
 
-		watch(wordings, (newValue) => {
-			// Executa quando 'wordings' é atualizado
-			console.log('wordings atualizado:', newValue);
+		watch(wordings, () => {
 			updatePaginatedWordings()
 		});
 

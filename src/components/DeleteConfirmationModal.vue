@@ -6,7 +6,7 @@
 			<v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn color="primary" text @click="close">Cancelar</v-btn>
-				<v-btn color="error" text @click="confirm">Excluir</v-btn>
+				<v-btn color="error" text @click="confirm" :disabled="isLoading">Excluir</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -23,6 +23,8 @@ export default defineComponent({
 	name: "DeleteModal",
 	setup() {
 		const store = useStore();
+
+		const isLoading = computed(() => store.getters.getIsLoading);
 
 		const internalShowDialog = computed({
 			get() {
@@ -75,6 +77,7 @@ export default defineComponent({
 			close,
 			confirm,
 			snackbar,
+			isLoading,
 		};
 	},
 });

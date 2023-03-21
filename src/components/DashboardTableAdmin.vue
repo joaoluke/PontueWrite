@@ -1,7 +1,6 @@
 <template>
 	<div class="mx-auto">
-		<v-table ref="tableWrapper" fixed-header height="450px"
-			style="background-color: #422576; border-radius: 10px; color: white">
+		<v-table fixed-header height="450px" style="background-color: #422576; border-radius: 10px; color: white">
 			<thead>
 				<tr>
 					<th class="text-left">Aluno</th>
@@ -9,7 +8,7 @@
 					<th class="text-left">Escola</th>
 					<th class="text-left">Número</th>
 					<th class="text-left">Data de criação</th>
-					<th class="text-left">Ações</th>
+					<th class="text-left" style="width: 235px;">Ações</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -20,7 +19,9 @@
 					<td class="item-table">{{ item.numero }}</td>
 					<td class="item-table">{{ formatDate(item.created_at) }}</td>
 					<td>
-						<v-btn small color="primary" @click="editEssay(item.id)">Editar</v-btn>
+						<v-btn size="small" color="#bb3f94" style="color: white; margin-right: 5px;"
+							@click="editEssay(item.id)">Editar</v-btn>
+						<v-btn size="small" color="#a73266" style="color: white" @click="openDeleteModal(item.id)">Excluir</v-btn>
 					</td>
 				</tr>
 			</tbody>
@@ -31,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, } from 'vue';
+import { defineComponent, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex'
 import axios from 'axios';
 
@@ -71,6 +72,10 @@ export default defineComponent({
 			}
 		}
 
+		function openDeleteModal(wordingId: string) {
+			store.dispatch("openDeleteModal", wordingId);
+		}
+
 		function formatDate(date: string) {
 			const parsedDate = new Date(date);
 			return parsedDate.toLocaleDateString('pt-BR', {
@@ -90,7 +95,10 @@ export default defineComponent({
 			openFormWording()
 		}
 
-		console.log(wordings.value, "wordings")
+		watch(wordings, () => {
+			updatePaginatedWordings()
+			pagination.value.pageCount = Math.ceil(wordings.value.length / pagination.value.itemsPerPage);
+		});
 
 		function updatePaginatedWordings() {
 			const start = (pagination.value.page - 1) * pagination.value.itemsPerPage;
@@ -100,7 +108,7 @@ export default defineComponent({
 
 		onMounted(fetchWordings);
 
-		return { wordings, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
+		return { wordings, openDeleteModal, paginatedWordings, pagination, formatDate, openFormWording, editEssay, updatePaginatedWordings };
 	},
 });
 </script>

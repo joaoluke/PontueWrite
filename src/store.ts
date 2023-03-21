@@ -13,6 +13,7 @@ export default createStore({
     wordings: [],
     deleteModalOpen: false,
     wordingId: null,
+    isLoading: false,
   },
   mutations: {
     login(state: RootState, payload: { token: string, idStudent: number }) {
@@ -44,6 +45,9 @@ export default createStore({
     removeWordingById(state, wordingId) {
       state.wordings = state.wordings.filter(wording => wording.id !== wordingId);
     },
+    setLoading(state, payload) {
+      state.isLoading = payload;
+    },
   },
   actions: {
     openDeleteModal({ commit }, wordingId) {
@@ -71,7 +75,7 @@ export default createStore({
       }
     },
     async deleteWording({ commit }, wordingId: number) {
-      commit("setDeleting", true);
+      commit("setLoading", true);
 
       try {
         const token = localStorage.getItem('token');
@@ -88,6 +92,7 @@ export default createStore({
           console.info(response.data)
           commit("setDeleteModalOpen", false);
           commit("removeWordingById", wordingId);
+          
           return true
         } else {
           console.error(response)
@@ -96,7 +101,7 @@ export default createStore({
         console.error("Erro ao excluir redação:", error);
         return false
       } finally {
-        commit("setDeleting", false);
+        commit("setLoading", false);
       }
     },
     async authenticate({ commit }, { email, password }) {
@@ -127,5 +132,6 @@ export default createStore({
     },
     isDeleteModalOpen: (state) => state.deleteModalOpen,
     wordingIdToDelete: (state) => state.wordingId,
+    getIsLoading: (state) => state.isLoading,
   },
 })
