@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" color="#432576ab" theme="dark" min-width="400">
+  <v-card class="mx-auto" color="#432576ab" theme="dark" max-width="500" min-width="400">
     <v-toolbar dark color="#a73266">
       <v-toolbar-title>Login PONTUE</v-toolbar-title>
     </v-toolbar>
@@ -16,8 +16,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mapState, Store } from 'vuex';
-import axios from 'axios';
 
+import axiosInstance from '@/services/connection'
 import type { RootState } from '@/types/store';
 
 declare module '@vue/runtime-core' {
@@ -36,7 +36,7 @@ export default defineComponent({
   }),
   methods: {
     authenticate() {
-      return axios.post('https://desafio.pontue.com.br/auth/login', { email: this.email, password: this.password })
+      return axiosInstance.post('auth/login', { email: this.email, password: this.password })
         .then(response => {
           window.localStorage.setItem("token", response.data.access_token)
           window.localStorage.setItem("idStudent", response.data.aluno_id)

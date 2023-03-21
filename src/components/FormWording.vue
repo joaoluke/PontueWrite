@@ -28,7 +28,8 @@
 <script>
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
-import axios from 'axios'
+
+import axiosInstance from '@/services/connection'
 
 export default {
 	setup() {
@@ -72,7 +73,7 @@ export default {
 			
 			try {
 				const token = window.localStorage.getItem('token');
-				await axios.post(`https://desafio.pontue.com.br/redacao/${wordingId.value}/update`, formData, {
+				await axiosInstance.post(`redacao/${wordingId.value}/update`, formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 						Authorization: `Bearer ${token}`,
@@ -114,7 +115,7 @@ export default {
 
 			try {
 				const token = window.localStorage.getItem('token');
-				await axios.post('https://desafio.pontue.com.br/alunos/redacao/create', formData, {
+				await axiosInstance.post('alunos/redacao/create', formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 						Authorization: `Bearer ${token}`,

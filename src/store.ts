@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
 
+import axiosInstance from '@/services/connection'
 import type { RootState } from './types/store';
 
 export default createStore({
@@ -67,10 +67,10 @@ export default createStore({
       if (!token || !idStudent) return;
       const isStudent = idStudent !== null && idStudent !== 'null';
 			const url = isStudent
-				? `https://desafio.pontue.com.br/index/aluno/${idStudent}`
-				: 'https://desafio.pontue.com.br/index/admin';
+				? `index/aluno/${idStudent}`
+				: 'index/admin';
       try {
-        const response = await axios.get(url, {
+        const response = await axiosInstance.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -84,10 +84,10 @@ export default createStore({
     async fetchEssay({ commit }, essayId: number) {
       commit("setWordingId", essayId);
 			const token = window.localStorage.getItem('token');
-			const url = `https://desafio.pontue.com.br/redacao/${essayId}`;
+			const url = `redacao/${essayId}`;
 
 			try {
-				const response = await axios.get(url, {
+				const response = await axiosInstance.get(url, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
@@ -111,7 +111,7 @@ export default createStore({
           }
         };
     
-        const response = await axios.delete(`https://desafio.pontue.com.br/redacao/${wordingId}/delete`, config);
+        const response = await axiosInstance.delete(`redacao/${wordingId}/delete`, config);
     
 
         if (response.status === 200) {
@@ -132,7 +132,7 @@ export default createStore({
     },
     async authenticate({ commit }, { email, password }) {
       try {
-        const response = await axios.post('https://desafio.pontue.com.br/auth/login', {
+        const response = await axiosInstance.post('auth/login', {
           email,
           password
         })

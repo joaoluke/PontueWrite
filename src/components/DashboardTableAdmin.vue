@@ -34,8 +34,8 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex'
-import axios from 'axios';
 
+import axiosInstance from '@/services/connection'
 import type { WordingsAdmin } from '../types/wordingAdmin'
 
 export default defineComponent({
@@ -54,10 +54,10 @@ export default defineComponent({
 
 			const isStudent = idStudent !== null && idStudent !== 'null';
 			const url = isStudent
-				? `https://desafio.pontue.com.br/index/aluno/${idStudent}`
-				: 'https://desafio.pontue.com.br/index/admin';
+				? `aluno/${idStudent}`
+				: 'index/admin';
 			try {
-				const response = await axios.get(url, {
+				const response = await axiosInstance.get(url, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
