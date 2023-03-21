@@ -2,8 +2,6 @@ import { createStore } from 'vuex'
 import axios from 'axios'
 
 import type { RootState } from './types/store';
-import FormWording from './components/FormWording.vue';
-
 
 export default createStore({
   state: {

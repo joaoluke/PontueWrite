@@ -42,8 +42,6 @@ export default defineComponent({
 			timeout: 5000,
 		});
 
-		const deleting = computed(() => store.state.deleteModalOpen);
-
 		const close = () => {
 			internalShowDialog.value = false;
 		};
@@ -72,7 +70,6 @@ export default defineComponent({
 
 		return {
 			internalShowDialog,
-			deleting,
 			close,
 			confirm,
 			snackbar,
